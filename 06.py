@@ -22,7 +22,7 @@ def run(_in):
         for i in range(blocks):
             banks[(i+idxmax+1) % len(banks)] += 1
 
-    return len(seen)
+    return (len(seen), len(seen) - seen.index(tuple(banks)))
 
 if __name__ == '__main__':
     import sys
