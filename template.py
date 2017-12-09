@@ -3,5 +3,5 @@ def run(_in):
 
 
 if __name__ == '__main__':
-    import sys
-    print(run(sys.stdin.read().strip()))
+    with open('XX.input') as f:
+        print(run(f.read().strip()))
