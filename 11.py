@@ -5,29 +5,26 @@ def run(_in):
     output = ''
     for path in paths:
         path = list(map(lambda s: s.strip(), path.split(',')))
-        idx = 0
-        while idx < len(path):
-            step = path[idx]
+        steps = list()
+        maxsteps = 0
+        for step in path:
             diridx = DIRECTIONS.index(step)
-            for jdx in range(idx+1, len(path)):
-                dirjdx = DIRECTIONS.index(path[jdx])
-                diff = (dirjdx - diridx) % len(DIRECTIONS)
-                if diff == 3:
-                    del path[jdx]
-                    del path[idx]
-                elif diff == 2:
-                    del path[jdx]
-                    path[idx] = DIRECTIONS[(diridx+1) % len(DIRECTIONS)]
-                elif diff == 4:
-                    del path[jdx]
-                    path[idx] = DIRECTIONS[(diridx-1) % len(DIRECTIONS)]
-                else:
-                    continue
+            found = False
 
-                idx -= 1
-                break
-            idx += 1
-        output += repr(len(path)) + '\n'
+            cancel = DIRECTIONS[(diridx + 3) % 6]
+            cancelright = DIRECTIONS[(diridx + 2) % 6]
+            cancelleft = DIRECTIONS[(diridx - 2) % 6]
+            if cancel in steps:
+                steps.remove(cancel)
+            elif cancelright in steps:
+                steps[steps.index(cancelright)] = DIRECTIONS[(diridx+1) % 6]
+            elif cancelleft in steps:
+                steps[steps.index(cancelleft)] = DIRECTIONS[(diridx-1) % 6]
+            else:
+                steps.append(step)
+
+            maxsteps = max(maxsteps, len(steps))
+        output += '{} steps, max {}\n'.format(len(steps), maxsteps)
     return output.strip()
 
 
