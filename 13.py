@@ -1,3 +1,6 @@
+from itertools import count
+
+
 def run(_in):
     lines = _in.split('\n')
     layers = list()
@@ -7,15 +10,27 @@ def run(_in):
         depth = int(args[1])
         layers.append((layer, depth))
 
-    severity = 0
-    for layer, depth in layers:
-        t = layer
-        # scandepth = abs(((t+2) % (2 * (depth-1)))-2)
-        # lol this isnt necessary at all
-        if t % ((depth-1)*2) == 0:
-            severity += depth * layer
+    def have_a_go(delay):
+        severity = 0
+        caught = False
+        for layer, depth in layers:
+            t = layer + delay
+            if t % ((depth-1)*2) == 0:
+                caught = True
+                severity += depth * layer
 
-    return severity
+        if not caught:
+            return True
+
+        return severity
+
+    def delay_needed():
+        for delay in count():
+            severity = have_a_go(delay)
+            if severity is True:
+                return delay
+
+    return (have_a_go(0), delay_needed())
 
 
 if __name__ == '__main__':
