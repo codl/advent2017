@@ -3,5 +3,5 @@ def run(_in):
 
 
 if __name__ == '__main__':
-    with open('XX.input') as f:
+    with open('XX.example.input') as f:
         print(run(f.read().strip()))
