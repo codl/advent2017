@@ -44,29 +44,35 @@ class CircularList(object):
     def __repr__(self):
         return repr(self.items)
 
+def densehash(_in):
+    steps = list(_in.encode('ASCII'))
+    steps += [17, 31, 73, 47, 23]
+
+    sparse = CircularList(256)
+    skip = 0
+    idx = 0
+
+    for _ in range(64):
+        for step in steps:
+            sparse[idx:idx+step] = sparse[idx+step-1:idx-1:-1]
+            idx += step
+            idx += skip
+            skip += 1
+
+    dense = list()
+    for i in range(16):
+        block = sparse[i*16:(i+1)*16]
+        byte = reduce(lambda x, y: x ^ y, block)
+        dense.append(byte)
+
+    return bytes(dense)
+
+
 def run(_in):
     inputs = _in.split('\n')
     output = ''
     for _in2 in inputs:
-        steps = list(_in2.encode('ASCII'))
-        steps += [17, 31, 73, 47, 23]
-
-        sparse = CircularList(256)
-        skip = 0
-        idx = 0
-
-        for _ in range(64):
-            for step in steps:
-                sparse[idx:idx+step] = sparse[idx+step-1:idx-1:-1]
-                idx += step
-                idx += skip
-                skip += 1
-
-        dense = list()
-        for i in range(16):
-            block = sparse[i*16:(i+1)*16]
-            byte = reduce(lambda x, y: x ^ y, block)
-            dense.append(byte)
+        dense = densehash(_in2)
 
         digest = ''
         for byte in dense:
