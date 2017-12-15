@@ -10,13 +10,16 @@ class Generator(object):
         self.state = (self.state * self.factor) % 2147483647
         return self.state % (2 ** 16)
 
-def run(_in):
+def get_generators(_in):
     args = _in.split('\n')
     gen_a = Generator(16807, int(args[0]))
     gen_b = Generator(48271, int(args[1]))
+    return gen_a, gen_b
+
+def run(_in):
+    gen_a, gen_b = get_generators(_in)
 
     count = 0
-    count2 = 0
     for a, b, i in zip(gen_a, gen_b, range(int(40e6))):
         if a == b:
             count += 1
