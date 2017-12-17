@@ -1,5 +1,6 @@
 from functools import reduce
 from textwrap import indent, dedent
+from itertools import count
 
 def compile_instructions(instructions, length):
     code = ''
@@ -9,7 +10,7 @@ def compile_instructions(instructions, length):
             nips = length - spin
             code += f'''
             programs += programs[:{nips}]
-            programs = programs[:{length}]
+            programs[:{-length}] = []
             '''
         elif instruction[0] == 'x':
             a, b = map(lambda n: int(n), instruction[1:].split('/'))
@@ -38,24 +39,33 @@ def compile_instructions(instructions, length):
 def run(_in, length=16):
     instructions = _in.split(',')
     programs = list("abcdefghijklmnop")[:length]
+    seen = list()
+    seen.append(tuple(programs))
 
     dance = compile_instructions(instructions, length)
 
-    for i in range(int(1e9)):
+    for i in count():
         dance(programs)
         if i == 0:
             solution1 = ''.join(programs)
-        if i % 1000000 == 0:
-            print(i)
+        tprograms = tuple(programs)
+        if tprograms not in seen:
+            seen.append(tprograms)
+        else:
+            intro_len = seen.index(tprograms)
+            cycle_len = i + 1 - intro_len
+            break
 
-    solution2 = ''.join(programs)
+    solution2 = seen[intro_len + (int(1e9) - intro_len) % cycle_len]
+
+    solution2 = ''.join(solution2)
 
     return (solution1, solution2)
 
 
 
 if __name__ == '__main__':
-    #with open('16.example.input') as f:
-        #print(run(f.read().strip(), 5))
+    with open('16.example.input') as f:
+        print(run(f.read().strip(), 5))
     with open('16.input') as f:
         print(run(f.read().strip()))
