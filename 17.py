@@ -1,43 +1,19 @@
-class LinkedList(object):
-    def __init__(self):
-        start = [0, None]
-        start[1] = start
-
-        self.current = start
-
-    def insert(self, value):
-        new = [value, self.current[1]]
-        self.current[1] = new
-        self.current = new
-
-    def advance(self, steps):
-        for i in range(steps):
-            self.current = self.current[1]
-
-    def find(self, value):
-        while self.current[0] != value:
-            self.advance(1)
+from blist import blist
 
 def run(_in):
     step = int(_in)
 
-    buf = LinkedList()
+    buf = blist([0])
+    index = 0
 
     for i in range(1, int(50e6)+1):
-        buf.advance(step)
-        buf.insert(i)
+        index = (index + step) % len(buf)
+        buf.insert(index+1, i)
+        index += 1
         if i == 2017:
-            solution1 = buf.current[1][0]
-        if i % 100000 == 0:
-            print(i)
+            solution1 = buf[index+1]
 
-    buf.find(0)
-    buf.advance(1)
-    solution2 = buf.current[0]
-
-    # let's help the reference counter
-    buf.current[1] = None
-    del buf.current
+    solution2 = buf[buf.index(0)+1]
 
     return solution1, solution2
 
