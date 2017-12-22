@@ -3,5 +3,10 @@ def run(_in):
 
 
 if __name__ == '__main__':
-    with open('XX.example.input') as f:
+    import sys
+    import os
+    day = os.path.basename(sys.argv[0]).split('.')[0]
+    with open(day + '.example.input') as f:
+        print(run(f.read().strip()))
+    with open(day + '.input') as f:
         print(run(f.read().strip()))
