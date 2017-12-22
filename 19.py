@@ -18,10 +18,16 @@ class Coordinate(object):
         return Coordinate(self.x + other.x, self.y + other.y)
 
     def rot(self, direction):
-        if direction >= 0:
+        if direction <= 0:
             return Coordinate(-self.y, self.x)
         else:
             return Coordinate(self.y, -self.x)
+
+    def __repr__(self):
+        return '<Coordinate ({}, {})>'.format(self.x, self.y)
+
+    def __neg__(self):
+        return Coordinate(-self.x, -self.y)
 
 
 def run(_in):
